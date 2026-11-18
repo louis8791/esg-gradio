@@ -15,7 +15,7 @@ from fastapi.staticfiles import StaticFiles
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 BASE_DIR = Path(__file__).resolve().parent
-STATIC_DIR = BASE_DIR / "static"
+STATIC_DIR = BASE_DIR / "esg gradio" / "files" / "static"
 
 DEFAULT_URL = os.environ.get(
     "CSV_URL",

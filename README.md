@@ -15,9 +15,9 @@
 
 | 項目 | 實作 |
 |---|---|
-| Web App Manifest | `static/manifest.webmanifest`(名稱、圖示、主題色、standalone 模式) |
-| Service Worker | `static/sw.js`,由 `/sw.js` 根路徑提供;離線時顯示 `offline.html` |
-| 圖示 | `static/icons/`(192、512、maskable、Apple Touch Icon、favicon) |
+| Web App Manifest | `esg gradio/files/static/manifest.webmanifest`(名稱、圖示、主題色、standalone 模式) |
+| Service Worker | `esg gradio/files/static/sw.js`,由 `/sw.js` 根路徑提供;離線時顯示 `offline.html` |
+| 圖示 | `esg gradio/files/static/icons/`(192、512、maskable、Apple Touch Icon、favicon) |
 | 安裝按鈕 | 瀏覽器符合安裝條件時,右下角出現「📲 安裝 App」 |
 | RWD | CSS media queries:手機(≤640px)橫排元件自動改直排、按鈕加大、表格可橫向捲動、支援瀏覽器安全區域(瀏海) |
 | 深色模式 | 沿用 Gradio 主題,離線頁也支援 |
@@ -29,22 +29,29 @@
 
 ```
 .
-├── app.py                  # Gradio + FastAPI 主程式
+├── app.py                  # 目前部署的 ESG / CSV 主程式
 ├── requirements.txt
-├── render.yaml             # Render 部署設定(選用)
-├── .gitignore
+├── render.yaml             # 既有 Render 服務設定
 ├── README.md
-└── static/
-    ├── manifest.webmanifest
-    ├── sw.js
-    ├── offline.html
-    └── icons/
-        ├── icon-192.png
-        ├── icon-512.png
-        ├── icon-maskable-512.png
-        ├── apple-touch-icon.png
-        └── favicon.png
+└── esg gradio/
+    ├── files/              # ESG 課堂舊版 + 現行 PWA 資源
+    │   ├── app.py           # 舊版（非目前部署入口）
+    │   ├── requirements.txt / render.yaml / README.md / .gitignore
+    │   ├── tainan-gradio-pwa.zip
+    │   └── static/
+    │       ├── manifest.webmanifest
+    │       ├── sw.js
+    │       ├── offline.html
+    │       └── icons/       # 5 個 PWA 圖示
+    └── files (2)/           # 獨立課堂 RAG 文件問答 PWA
+        ├── app.py
+        ├── requirements.txt / requirements-lite.txt
+        ├── render.yaml / README.md / .gitignore
+        ├── rag-qa-pwa.zip
+        └── static/          # RAG 專用 PWA 資源
 ```
+
+現行 ESG 網站維持從儲存庫根目錄執行 `app:app`，PWA 資源由 `esg gradio/files/static/` 讀取。兩套系統的 PWA 資源不共用。課堂 RAG 若另外部署，需將該服務的 Root Directory 設為 `esg gradio/files (2)` 並採用其專屬部署設定；不要覆蓋現有 ESG 服務。
 
 ## 💻 本機執行
 
@@ -57,7 +64,7 @@ python app.py
 
 ## 🚀 部署到 Render
 
-1. 把整個資料夾(**包含 `static/`**)推上 GitHub。
+1. 把整個儲存庫(**包含 `esg gradio/files/static/`**)推上 GitHub。
 2. Render → **New → Web Service** → 選擇你的 repo。
 3. 設定:
 
@@ -89,7 +96,7 @@ python app.py
 
 ## 🔄 更新 PWA 快取
 
-修改 `static/sw.js` 內的 `VERSION`(例如 `v1` → `v2`),使用者下次開啟時舊快取會自動清除。
+修改 `esg gradio/files/static/sw.js` 內的 `VERSION`(例如 `v1` → `v2`),使用者下次開啟時舊快取會自動清除。
 
 ## ⚠️ 注意事項
 

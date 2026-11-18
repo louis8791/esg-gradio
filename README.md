@@ -96,3 +96,8 @@ python app.py
 - Render 免費方案閒置約 15 分鐘會休眠,再次開啟需約 30~60 秒喚醒。
 - 程式使用 `verify=False` 下載資料(原始程式即如此),會關閉 SSL 憑證驗證,僅建議用於公開資料。
 - 資料來源:[台南市政府資料開放平台](https://data.tainan.gov.tw/)
+
+
+## App 介面升級
+
+支援任意可讀取的公開 CSV 網址（預設保留台南市資料）、響應式統計卡片、CSV / Excel 匯出、資料表複製與全螢幕操作。Chrome / Edge 可透過網站安裝功能安裝 PWA；iOS Safari 可加入主畫面。

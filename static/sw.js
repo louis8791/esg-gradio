@@ -6,7 +6,7 @@
  *  4. API / 即時資料(/gradio_api、/queue 等)一律不快取
  * 更新時請把 VERSION 加 1,舊快取會自動清除。
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const CACHE = "tainan-pwa-" + VERSION;
 const PRECACHE = [
   "/offline.html",

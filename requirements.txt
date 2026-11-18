@@ -1,6 +1,7 @@
-gradio>=5.0.0,<6.0.0
+gradio==5.49.1
 fastapi>=0.110.0
 uvicorn>=0.29.0
 pandas>=2.0.0
 requests>=2.31.0
 urllib3>=2.0.0
+openpyxl>=3.1,<4

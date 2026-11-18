@@ -43,11 +43,11 @@
 ### 完整模式
 
 1. 把整個資料夾(**含 `static/`**)推上 GitHub。
-2. Render → **New → Blueprint** → 選你的 repo,Render 會讀取 `render.yaml`。
+2. 在 Render 另建 Web Service，Root Directory 設為 `rag_qa`，並使用下方指令；如使用 Blueprint，須明確選擇 `rag_qa/render.yaml`（根目錄 `render.yaml` 屬於 ESG）。不要覆蓋既有 ESG 服務。
 3. 填入環境變數 `GROQ_API_KEY`(到 [console.groq.com](https://console.groq.com/keys) 取得)。
 4. 部署完成後,用 Render 網址開啟。
 
-手動建立 Web Service 時:
+手動建立 Web Service 時（Root Directory：`rag_qa`）:
 
 | 欄位 | 值 |
 |---|---|

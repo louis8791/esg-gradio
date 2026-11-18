@@ -1,110 +1,40 @@
-# 📊 台南市開放資料瀏覽器(PWA + RWD)
+# ESG & RAG · Gradio 應用系統
 
-使用 [Gradio](https://www.gradio.app/) + FastAPI 製作的台南市政府開放資料(CSV)瀏覽器。
-支援 **PWA**(可安裝成手機 / 電腦 App)與 **RWD**(手機、平板、桌機自動適應版面)。
+本儲存庫包含兩套獨立的課堂應用，使用相同的 Gradio、FastAPI、PWA 與 Render 技術，但各自保有主程式、相依套件及 PWA 資源。
 
-## ✨ 功能
+| 專案 | 功能 | 開啟 |
+| --- | --- | --- |
+| ESG CSV | 公開資訊 CSV 瀏覽、搜尋、統計、匯出 | [esg_csv](esg_csv/) |
+| RAG 文件問答 | PDF／DOCX、八種檢索策略、Groq、Word／CSV 匯出 | [rag_qa](rag_qa/) |
 
-- 自動下載 CSV 並移除缺值列(`dropna`)
-- 關鍵字搜尋(全部欄位或指定欄位)
-- 匯出篩選結果為 CSV(UTF-8 with BOM,Excel 可直接開啟中文)
-- 任選欄位繪製前 N 名長條圖
-- 欄位結構與數值欄位統計摘要
+## 專案結構
 
-## 📱 PWA 與 RWD 說明
-
-| 項目 | 實作 |
-|---|---|
-| Web App Manifest | `esg gradio/files/static/manifest.webmanifest`(名稱、圖示、主題色、standalone 模式) |
-| Service Worker | `esg gradio/files/static/sw.js`,由 `/sw.js` 根路徑提供;離線時顯示 `offline.html` |
-| 圖示 | `esg gradio/files/static/icons/`(192、512、maskable、Apple Touch Icon、favicon) |
-| 安裝按鈕 | 瀏覽器符合安裝條件時,右下角出現「📲 安裝 App」 |
-| RWD | CSS media queries:手機(≤640px)橫排元件自動改直排、按鈕加大、表格可橫向捲動、支援瀏覽器安全區域(瀏海) |
-| 深色模式 | 沿用 Gradio 主題,離線頁也支援 |
-
-> **注意**:資料需要連網下載,離線時只會顯示友善的離線頁面,不會有舊資料。
-> PWA 需要 **HTTPS** 才能安裝,Render 預設提供 HTTPS;本機 `localhost` 也可測試。
-
-## 📁 專案結構
-
-```
+```text
 .
-├── app.py                  # 目前部署的 ESG / CSV 主程式
-├── requirements.txt
-├── render.yaml             # 既有 Render 服務設定
-├── README.md
-└── esg gradio/
-    ├── files/              # ESG 課堂舊版 + 現行 PWA 資源
-    │   ├── app.py           # 舊版（非目前部署入口）
-    │   ├── requirements.txt / render.yaml / README.md / .gitignore
-    │   ├── tainan-gradio-pwa.zip
-    │   └── static/
-    │       ├── manifest.webmanifest
-    │       ├── sw.js
-    │       ├── offline.html
-    │       └── icons/       # 5 個 PWA 圖示
-    └── files (2)/           # 獨立課堂 RAG 文件問答 PWA
-        ├── app.py
-        ├── requirements.txt / requirements-lite.txt
-        ├── render.yaml / README.md / .gitignore
-        ├── rag-qa-pwa.zip
-        └── static/          # RAG 專用 PWA 資源
+├── esg_csv/          # ESG 應用程式（現行部署）
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── README.md
+│   ├── static/
+│   └── legacy/       # 原始課堂版本
+├── rag_qa/           # RAG 問答應用程式
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── requirements-lite.txt
+│   ├── render.yaml
+│   ├── README.md
+│   └── static/
+├── app.py            # 現有 ESG Render 相容啟動入口
+├── requirements.txt  # 引用 ESG 套件清單
+├── render.yaml       # 現有 ESG 部署設定
+└── README.md
 ```
 
-現行 ESG 網站維持從儲存庫根目錄執行 `app:app`，PWA 資源由 `esg gradio/files/static/` 讀取。兩套系統的 PWA 資源不共用。課堂 RAG 若另外部署，需將該服務的 Root Directory 設為 `esg gradio/files (2)` 並採用其專屬部署設定；不要覆蓋現有 ESG 服務。
+兩個原始 ZIP 壓縮檔仍保存在相應專案資料夾中。
 
-## 💻 本機執行
+## 部署
 
-```bash
-pip install -r requirements.txt
-python app.py
-```
+- ESG：保留現有 Render 服務設定；根目錄啟動指令 `uvicorn app:app --host 0.0.0.0 --port $PORT` 不變。
+- RAG：參考 [RAG 部署說明](rag_qa/README.md)，另建服務，Root Directory 使用 `rag_qa`。完整模式可能需要付費實例；輕量模式有檢索能力限制。
 
-開啟 http://localhost:7860
-
-## 🚀 部署到 Render
-
-1. 把整個儲存庫(**包含 `esg gradio/files/static/`**)推上 GitHub。
-2. Render → **New → Web Service** → 選擇你的 repo。
-3. 設定:
-
-   | 欄位 | 值 |
-   |---|---|
-   | Runtime | Python 3 |
-   | Build Command | `pip install -r requirements.txt` |
-   | Start Command | `uvicorn app:app --host 0.0.0.0 --port $PORT` |
-   | Health Check Path | `/healthz` |
-   | Instance Type | Free |
-
-4. Environment 新增 `PYTHON_VERSION` = `3.11.9`。
-5. Create Web Service。部署完成後用 Render 網址開啟即可。
-
-也可以選 **New → Blueprint**,Render 會自動讀取 `render.yaml`。
-
-## 📲 安裝成 App
-
-- **Android(Chrome)**:點右下角「📲 安裝 App」,或選單 → 加到主畫面
-- **iPhone / iPad(Safari)**:分享 → 加入主畫面
-- **電腦(Chrome / Edge)**:網址列右側的安裝圖示
-
-## ⚙️ 環境變數
-
-| 變數 | 說明 | 預設 |
-|---|---|---|
-| `CSV_URL` | 預設載入的 CSV 連結 | 台南市開放資料連結 |
-| `PORT` | 服務埠號(Render 自動提供) | `7860` |
-
-## 🔄 更新 PWA 快取
-
-修改 `esg gradio/files/static/sw.js` 內的 `VERSION`(例如 `v1` → `v2`),使用者下次開啟時舊快取會自動清除。
-
-## ⚠️ 注意事項
-
-- Render 免費方案閒置約 15 分鐘會休眠,再次開啟需約 30~60 秒喚醒。
-- 程式使用 `verify=False` 下載資料(原始程式即如此),會關閉 SSL 憑證驗證,僅建議用於公開資料。
-- 資料來源:[台南市政府資料開放平台](https://data.tainan.gov.tw/)
-
-
-## App 介面升級
-
-支援任意可讀取的公開 CSV 網址（預設保留台南市資料）、響應式統計卡片、CSV / Excel 匯出、資料表複製與全螢幕操作。Chrome / Edge 可透過網站安裝功能安裝 PWA；iOS Safari 可加入主畫面。
+兩套 PWA 的圖示、名稱、快取與部署設定各自獨立。目前不抽離共用模組，以免讓兩個服務互相依賴。
